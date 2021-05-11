@@ -46,6 +46,14 @@ export default function Home() {
         }
     };
 
+    const handleOnLoad = async () => {
+        try {
+            handleFindProducts();
+        } catch (error) {
+            return;
+        }
+    }
+
     React.useEffect(() => { handleFindProducts(); handleToken(); }, []);
 
     return (
@@ -68,6 +76,8 @@ export default function Home() {
                         renderItem={({ item }: any) => <ListHome item={item} onPressDelete={() => handleDeleteItem(item.id)} />}
                         keyExtractor={(item, index) => index.toString()}
                         alwaysBounceVertical={true}
+                        onEndReached={handleOnLoad}
+                        onEndReachedThreshold={0.1}
                     />
                     :
                     <>
