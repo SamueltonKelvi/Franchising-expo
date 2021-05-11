@@ -1,6 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, Alert } from 'react-native';
 import Utils from '../../utils';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { getTokenItem } from '../../services/AsyncStorage';
+import Api from '../../services';
 
 const styles = StyleSheet.create({
 
@@ -8,7 +11,7 @@ const styles = StyleSheet.create({
         width: '95%',
         padding: 10,
         height: 150,
-        elevation: 2,
+        elevation: 4,
         backgroundColor: Utils.color.White,
         borderRadius: 5,
         flexDirection: 'row',
@@ -26,10 +29,17 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     colTwo: {
-        width: '60%',
+        width: '50%',
         height: 'auto',
         alignItems: 'flex-start',
         justifyContent: 'center',
+        flexDirection: 'column'
+    },
+    colTree: {
+        width: '10%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         flexDirection: 'column'
     },
     img: {
@@ -42,13 +52,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     description: {
+        fontSize: 14,
+        paddingTop: 5,
+    },
+    ingredients: {
         fontSize: 12,
-        flexWrap: 'wrap',
     }
 
 });
 
-export default function ListHome({ item }: any) {
+export default function ListHome({ item, onPressDelete }: any) {
     return (
         <View style={styles.container} key={item.id}>
             <View style={styles.colOne}>
@@ -56,8 +69,27 @@ export default function ListHome({ item }: any) {
             </View>
             <View style={styles.colTwo}>
                 <Text style={styles.text}>{item.name}</Text>
-                <Text numberOfLines={3} style={styles.description}>{item.description}</Text>
+                <Text style={styles.description}>Ingredientes</Text>
+                <Text style={styles.ingredients}>{item.price}</Text>
             </View>
-        </View>
+            <View style={styles.colTree}>
+                <Pressable>
+                    <Ionicons name="create-outline" size={25} color={Utils.color.Black} />
+                </Pressable>
+                <Pressable onPress={
+                    Alert.alert(
+                        "Deseja deletar este item?",
+                        "",
+                        [{
+                            text: "Cancelar",
+                            onPress: () => console.log("Cancel Pressed"),
+                            style: "cancel"
+                        },
+                        { text: "Sim", onPress: () => onPressDelete(item.id) }]
+                    )}>
+                    <Ionicons name="trash-outline" size={25} color={Utils.color.Red} />
+                </Pressable>
+            </View>
+        </View >
     )
 }

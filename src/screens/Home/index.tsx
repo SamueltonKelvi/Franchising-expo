@@ -1,57 +1,76 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text, View, ScrollView, SafeAreaView, FlatList, Pressable } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { styles } from './styles';
+import Utils from '../../utils';
 import { ListHome, Loading, Create } from '../../components';
-import { findProductList } from '../../services/Requests';
+import Api from '../../services';
+import { getTokenItem } from '../../services/AsyncStorage';
 
 export default function Home() {
     const navigation = useNavigation();
+    const [token, setToken] = React.useState<any>(null);
     const [data, setData] = React.useState<any>([]);
     const [loading, setLoading] = React.useState<Boolean>(false);
     const [modalCreate, setModalCreate] = React.useState<Boolean>(false);
     const [empty, setEmpty] = React.useState<any>('Lista de produtos vazia!');
-    const _PAGE: any = 1;
-    const _SIZE: any = 10;
+    const [page, setPage] = React.useState<any>(1);
+    const [size, setSize] = React.useState<any>(10);
+
+    const handleToken = async () => {
+        const user = await getTokenItem();
+        return setToken(user);
+    }
 
     const handleFindProducts = async () => {
         setLoading(true);
 
-        const response = await findProductList(_PAGE, _SIZE);
+        const response = await Api({
+            url: `/product/list?page=${page}&size=${size}`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${JSON.parse(token)}`
+            }
+        });
 
-        switch (response.status) {
-            case 200:
-                setLoading(false);
-                let products = response.data.content;
-                setData(data.concat(products));
-                break;
-            case 401 || 400 || 500:
-                setEmpty('Sem acesso à lista de produtos');
-                setData(data);
-                setLoading(false);
-                break;
-            default:
-                setLoading(false);
-                setData(data);
-                return setEmpty('Nenhum produto encontrado!');
+        if (response.status !== 200) {
+            setLoading(false);
+            return setEmpty('Algo deu errado');
         }
+
+        setLoading(false);
+        setEmpty(empty);
+        return setData(data.concat(response.data.content));
     }
 
-    React.useEffect(() => { handleFindProducts(); }, []);
+    const handleDeleteItem = async (id) => {
+        return await Api.delete(`/product/delete/${id}`);
+    };
+
+    console.log(`Data ${data}`);
+
+    React.useEffect(() => { handleFindProducts(); handleToken(); }, [!data]);
 
     return (
         <SafeAreaView style={styles.Container}>
-            { modalCreate && <Create modalVisible={modalCreate} setModalVisible={setModalCreate}/> }
+            { modalCreate && <Create modalVisible={modalCreate} setModalVisible={setModalCreate} />}
             <View style={styles.Header}>
                 <Text style={styles.HeaderText}>Lista de produtos</Text>
+                <Pressable style={styles.AddButton} onPress={() => setModalCreate(true)}>
+                    <Ionicons name="add" size={25} color={Utils.color.Black} />
+                </Pressable>
             </View>
             <ScrollView style={styles.Scroll} alwaysBounceVertical={true}>
                 {data.length >= 1 ?
                     <FlatList
                         data={data}
-                        initialNumToRender={10}
-                        renderItem={({ item }: any) => <ListHome item={item} />}
+                        initialNumToRender={5}
+                        renderItem={({ item }: any) => <ListHome item={item} onPressDelete={() => handleDeleteItem(item.id)}/>}
                         keyExtractor={(item) => item = item.id}
+                        onEndReached={() => handleFindProducts()}
+                        onEndReachedThreshold={0.1}
                     />
                     :
                     <>

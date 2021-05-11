@@ -12,13 +12,21 @@ export const styles = StyleSheet.create({
     },
     Header:{
         width: '100%',
-        padding: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 20,
         backgroundColor: utils.color.White,
         marginBottom: 10,
     },
     HeaderText:{
         fontSize: 18,
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
         textAlign: 'center',
+    },
+    AddButton:{
+        padding: 5,
     },
     Scroll: {
         width: '100%',
