@@ -96,14 +96,14 @@ export default function Create({ modalVisible, setModalVisible }: any) {
     }
 
     const handleSave = async () => {
-        if (cost === '' || nameIngredients === '' || quantity === '' || nameProduct === '' || price === '') {
+        if (image === null || cost === '' || nameIngredients === '' || quantity === '' || nameProduct === '' || price === '') {
             return setError('Preencha todos os campos');
         } else {
             setError('');
             setLoading(true);
 
             const data = {
-                image: image,
+                image,
                 ingredients: [{
                     cost: cost,
                     name: nameIngredients,
@@ -147,7 +147,7 @@ export default function Create({ modalVisible, setModalVisible }: any) {
 
         handleToken();
 
-    }, [!token]);
+    }, []);
 
     return (
         <Modal

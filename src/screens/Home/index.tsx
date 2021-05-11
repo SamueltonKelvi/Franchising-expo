@@ -23,36 +23,29 @@ export default function Home() {
         return setToken(user);
     }
 
-    const handleFindProducts = async () => {
-        setLoading(true);
+    const handleFindProducts = React.useCallback(async () => {
+        try {
+            const response = await Api({
+                url: `/product/list?page=${page}&size=${size}`,
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${JSON.parse(token)}`
+                }
+            });
+            return setData(data.concat(response.data.content));
+        } catch (error) {
+            return setData(data);
+        }
+    }, [data])
 
-        const response = await Api({
-            url: `/product/list?page=${page}&size=${size}`,
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${JSON.parse(token)}`
-            }
-        });
-
-        setLoading(false);
-        return setData(data.concat(response.data.content));
-    }
-
-    const handleDeleteItem = async ({ id }: any) => {
-        Alert.alert(
-            "Deseja deletar este item?",
-            "",
-            [{
-                text: "Cancelar",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel"
-            },
-            {
-                text: "Sim",
-                onPress: await Api.delete(`/product/delete/${id}`)
-            }]
-        )
+    const handleDeleteItem = async (id) => {
+        const response = await Api({ url: `/product/delete/${id}`, method: 'DELETE', headers: { 'Authorization': `${JSON.parse(token)}` } })
+        if (response.status === 200) {
+            return Alert.alert('Item deletado com sucesso!');
+        } else {
+            return Alert.alert('Problemas para deletar este item!');
+        }
     };
 
     console.log(`Data ${data}`);
