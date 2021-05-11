@@ -10,3 +10,7 @@
 - Expo CLI
 - TypeScript
 - Axios
+
+## Dificuldades 
+- Tratamento de erros e excessões ao salvar um item
+- Tratamento de erros e excessões ao buscar lista de produtos
