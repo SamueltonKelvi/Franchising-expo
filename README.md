@@ -12,5 +12,5 @@
 - Axios
 
 ## Dificuldades 
-- Tratamento de erros e excessões ao salvar um item
-- Tratamento de erros e excessões ao buscar lista de produtos
+- Tratamento de erros e exceções ao salvar um item
+- Tratamento de erros e exceções ao buscar lista de produtos
