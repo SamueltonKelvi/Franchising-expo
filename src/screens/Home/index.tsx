@@ -54,7 +54,11 @@ export default function Home() {
         }
     }
 
-    React.useEffect(() => { handleFindProducts(); handleToken(); }, []);
+    React.useEffect(() => {
+
+        handleFindProducts(); handleToken();
+
+    }, [!data, token]);
 
     return (
         <SafeAreaView style={styles.Container}>

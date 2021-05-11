@@ -103,7 +103,7 @@ export default function Create({ modalVisible, setModalVisible }: any) {
             setLoading(true);
 
             const data = {
-                image,
+                image: "image",
                 ingredients: [{
                     cost: cost,
                     name: nameIngredients,
@@ -128,9 +128,11 @@ export default function Create({ modalVisible, setModalVisible }: any) {
                 return setError('Algo deu errado');
             }
 
+            console.log(response.status);
+
             setLoading(false);
             handleSetState();
-            return setModalVisible(!modalVisible);
+            return setModalVisible(false);
         }
     }
 
