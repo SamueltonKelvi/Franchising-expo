@@ -5,7 +5,7 @@ export const getTokenItem = () => {
     return AsyncStorage.getItem(TOKEN);
 }
 
-export const setTokenItem = (data) => {
+export const setTokenItem = ({data}: any) => {
     return AsyncStorage.setItem(TOKEN, JSON.stringify(data));
 }
 

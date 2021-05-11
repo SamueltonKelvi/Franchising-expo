@@ -1,9 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import Utils from '../../utils';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { getTokenItem } from '../../services/AsyncStorage';
-import Api from '../../services';
 
 const styles = StyleSheet.create({
 
@@ -76,17 +74,7 @@ export default function ListHome({ item, onPressDelete }: any) {
                 <Pressable>
                     <Ionicons name="create-outline" size={25} color={Utils.color.Black} />
                 </Pressable>
-                <Pressable onPress={
-                    Alert.alert(
-                        "Deseja deletar este item?",
-                        "",
-                        [{
-                            text: "Cancelar",
-                            onPress: () => console.log("Cancel Pressed"),
-                            style: "cancel"
-                        },
-                        { text: "Sim", onPress: () => onPressDelete(item.id) }]
-                    )}>
+                <Pressable onPress={onPressDelete}>
                     <Ionicons name="trash-outline" size={25} color={Utils.color.Red} />
                 </Pressable>
             </View>

@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Modal, Pressable, ScrollView } from 'react-native';
-import { FormInput, Button, AlertError, Loading } from '../../components';
+import FormInput from '../FormInput';
+import Button from '../Button';
+import Loading from '../Loading';
+import AlertError from '../AlertError';
 import Utils from '../../utils';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Api from '../../services';
@@ -10,12 +13,13 @@ const styles = StyleSheet.create({
 
     centeredView: {
         flex: 1,
-        marginTop: 10,
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
         backgroundColor: Utils.color.White,
         alignItems: 'center',
-        elevation: 2
+        elevation: 2,
+        marginTop: 50,
+        paddingBottom: '10%'
     },
     scroll: {
         width: '100%',
@@ -26,7 +30,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: 'center',
         padding: 10,
-        width: '96%',
+        width: '90%',
         height: 'auto'
     },
     modalText: {
@@ -103,64 +107,67 @@ export default function Create({ modalVisible, setModalVisible }: any) {
     React.useEffect(() => { handleToken(); }, [!token]);
 
     return (
-        <View>
-            <Modal
-                animationType="slide"
-                visible={modalVisible}
-                onRequestClose={() => { setModalVisible(!modalVisible); }}>
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Inserir produtos</Text>
-                        <Pressable style={{ padding: 5 }} onPress={() => setModalVisible(!modalVisible)}>
-                            <Ionicons name="close" size={25} color={Utils.color.Red} />
-                        </Pressable>
-                    </View>
-                    <ScrollView style={styles.scroll} alwaysBounceVertical={true}>
-                        <FormInput
-                            title="Nome do produto"
-                            placeholder="Ex: Café Santa Clara"
-                            value={nameProduct}
-                            onChangeText={(e: any) => setNameProduct(e)}
-                            keyboardType="default"
-                            secureTextEntry={false}
-                        />
-                        <FormInput
-                            title="Nome do ingrediente"
-                            placeholder="Ex: Sazon"
-                            value={nameIngredients}
-                            onChangeText={(e: any) => setNameIngredients(e)}
-                            keyboardType="default"
-                            secureTextEntry={false}
-                        />
-                        <FormInput
-                            title="Custo do ingrediente"
-                            placeholder="R$ 00,00"
-                            value={cost}
-                            onChangeText={(e: any) => setCost(e)}
-                            keyboardType="number-pad"
-                            secureTextEntry={false}
-                        />
-                        <FormInput
-                            title="Quantidade do ingrediente"
-                            placeholder="Qtd: 0"
-                            value={quantity}
-                            onChangeText={(e: any) => setQuantity(e)}
-                            keyboardType="number-pad"
-                            secureTextEntry={false}
-                        />
-                        <FormInput
-                            title="Preço do produto"
-                            placeholder="R$ 00,00"
-                            value={price}
-                            onChangeText={(e: any) => setPrice(e)}
-                            keyboardType="number-pad"
-                            secureTextEntry={false}
-                        />
-                        {error && <AlertError title={error} />}
-                        {loading ? <Loading /> : <Button title="SALVAR" onPress={handleSave} />}
-                    </ScrollView>
+        <Modal
+            animationType="slide"
+            visible={modalVisible}
+            onRequestClose={() => { setModalVisible(!modalVisible); }}>
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <Text style={styles.modalText}>Inserir produtos</Text>
+                    <Pressable style={{ padding: 0 }} onPress={() => setModalVisible(!modalVisible)}>
+                        <Ionicons name="close" size={25} color={Utils.color.Red} />
+                    </Pressable>
                 </View>
-            </Modal>
-        </View>
+                <ScrollView style={styles.scroll} alwaysBounceVertical={true}>
+                    <FormInput
+                        title="Nome do produto"
+                        placeholder="Ex: Café Santa Clara"
+                        value={nameProduct}
+                        onChangeText={(e: any) => setNameProduct(e)}
+                        keyboardType="default"
+                        secureTextEntry={false}
+                        formatNumber={false}
+                    />
+                    <FormInput
+                        title="Nome do ingrediente"
+                        placeholder="Ex: Sazon"
+                        value={nameIngredients}
+                        onChangeText={(e: any) => setNameIngredients(e)}
+                        keyboardType="default"
+                        secureTextEntry={false}
+                        formatNumber={false}
+                    />
+                    <FormInput
+                        title="Custo do ingrediente"
+                        placeholder="R$ 00,00"
+                        value={cost}
+                        onChangeText={(e: any) => setCost(e)}
+                        keyboardType="numeric"
+                        secureTextEntry={false}
+                        formatNumber={true}
+                    />
+                    <FormInput
+                        title="Quantidade do ingrediente"
+                        placeholder="Qtd: 0"
+                        value={quantity}
+                        onChangeText={(e: any) => setQuantity(e)}
+                        keyboardType="numeric"
+                        secureTextEntry={false}
+                        formatNumber={false}
+                    />
+                    <FormInput
+                        title="Preço do produto"
+                        placeholder="R$ 00,00"
+                        value={price}
+                        onChangeText={(e: any) => setPrice(e)}
+                        keyboardType="numeric"
+                        secureTextEntry={false}
+                        formatNumber={true}
+                    />
+                    {error && <AlertError title={error} />}
+                    {loading ? <Loading /> : <Button title="SALVAR" onPress={handleSave} />}
+                </ScrollView>
+            </View>
+        </Modal>
     );
 }
