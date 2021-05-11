@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Modal, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Modal, Pressable, Image, ScrollView, Platform } from 'react-native';
 import FormInput from '../FormInput';
 import Button from '../Button';
 import Loading from '../Loading';
@@ -8,6 +8,7 @@ import Utils from '../../utils';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Api from '../../services';
 import { getTokenItem } from '../../services/AsyncStorage';
+import * as ImagePicker from 'expo-image-picker';
 
 const styles = StyleSheet.create({
 
@@ -37,12 +38,24 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         textAlign: "center",
         fontSize: 16,
+    },
+    pressImg: {
+        padding: 10,
+        width: '90%',
+        alignSelf: 'center',
+        elevation: 5,
+        margin: 10,
+        backgroundColor: Utils.color.Gray
+    },
+    pressImgText: {
+        textAlign: 'center',
+        fontSize: 14,
     }
 
 });
 
 export default function Create({ modalVisible, setModalVisible }: any) {
-    const [image, setImage] = React.useState<any>('image');
+    const [image, setImage] = React.useState<any>(null);
     const [cost, setCost] = React.useState<any>('');
     const [nameIngredients, setNameIngredients] = React.useState<any>('');
     const [quantity, setQuantity] = React.useState<any>('');
@@ -51,6 +64,23 @@ export default function Create({ modalVisible, setModalVisible }: any) {
     const [error, setError] = React.useState<any>(null);
     const [loading, setLoading] = React.useState<Boolean>(false);
     const [token, setToken] = React.useState<any>(null);
+
+    const handleImagePicker = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.cancelled) {
+            setImage(result.uri);
+        }
+    }
+
+    console.log(`Image ${image}`);
 
     const handleSetState = () => {
         setCost('');
@@ -104,7 +134,20 @@ export default function Create({ modalVisible, setModalVisible }: any) {
         }
     }
 
-    React.useEffect(() => { handleToken(); }, [!token]);
+    React.useEffect(() => {
+
+        (async () => {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
+            }
+        })();
+
+        handleToken();
+
+    }, [!token]);
 
     return (
         <Modal
@@ -119,6 +162,10 @@ export default function Create({ modalVisible, setModalVisible }: any) {
                     </Pressable>
                 </View>
                 <ScrollView style={styles.scroll} alwaysBounceVertical={true}>
+                    <Pressable style={styles.pressImg} onPress={handleImagePicker}>
+                        <Text style={styles.pressImgText}>Buscar imagem</Text>
+                    </Pressable>
+                    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
                     <FormInput
                         title="Nome do produto"
                         placeholder="Ex: Café Santa Clara"
@@ -126,7 +173,6 @@ export default function Create({ modalVisible, setModalVisible }: any) {
                         onChangeText={(e: any) => setNameProduct(e)}
                         keyboardType="default"
                         secureTextEntry={false}
-                        formatNumber={false}
                     />
                     <FormInput
                         title="Nome do ingrediente"
@@ -135,7 +181,6 @@ export default function Create({ modalVisible, setModalVisible }: any) {
                         onChangeText={(e: any) => setNameIngredients(e)}
                         keyboardType="default"
                         secureTextEntry={false}
-                        formatNumber={false}
                     />
                     <FormInput
                         title="Custo do ingrediente"
@@ -144,7 +189,6 @@ export default function Create({ modalVisible, setModalVisible }: any) {
                         onChangeText={(e: any) => setCost(e)}
                         keyboardType="numeric"
                         secureTextEntry={false}
-                        formatNumber={true}
                     />
                     <FormInput
                         title="Quantidade do ingrediente"
@@ -153,7 +197,6 @@ export default function Create({ modalVisible, setModalVisible }: any) {
                         onChangeText={(e: any) => setQuantity(e)}
                         keyboardType="numeric"
                         secureTextEntry={false}
-                        formatNumber={false}
                     />
                     <FormInput
                         title="Preço do produto"
@@ -162,7 +205,6 @@ export default function Create({ modalVisible, setModalVisible }: any) {
                         onChangeText={(e: any) => setPrice(e)}
                         keyboardType="numeric"
                         secureTextEntry={false}
-                        formatNumber={true}
                     />
                     {error && <AlertError title={error} />}
                     {loading ? <Loading /> : <Button title="SALVAR" onPress={handleSave} />}
