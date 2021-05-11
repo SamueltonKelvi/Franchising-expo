@@ -63,11 +63,10 @@ export default function ListHome({ item, onPressDelete }: any) {
     return (
         <View style={styles.container} key={item.id}>
             <View style={styles.colOne}>
-                <Image style={styles.img} source={require('../../assets/img/feijao.png')} />
+                <Image style={styles.img} source={ require('../../assets/img/feijao.png') } />
             </View>
             <View style={styles.colTwo}>
                 <Text style={styles.text}>{item.name}</Text>
-                <Text style={styles.description}>Ingredientes</Text>
                 <Text style={styles.ingredients}>{item.price}</Text>
             </View>
             <View style={styles.colTree}>

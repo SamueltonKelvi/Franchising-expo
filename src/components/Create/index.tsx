@@ -96,7 +96,7 @@ export default function Create({ modalVisible, setModalVisible }: any) {
     }
 
     const handleSave = async () => {
-        if (image === null || cost === '' || nameIngredients === '' || quantity === '' || nameProduct === '' || price === '') {
+        if (cost === '' || nameIngredients === '' || quantity === '' || nameProduct === '' || price === '') {
             return setError('Preencha todos os campos');
         } else {
             setError('');

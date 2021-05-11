@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useNavigation } from '@react-navigation/native';
 import { Text, View, ScrollView, SafeAreaView, FlatList, Pressable, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { styles } from './styles';
@@ -9,7 +8,6 @@ import Api from '../../services';
 import { getTokenItem } from '../../services/AsyncStorage';
 
 export default function Home() {
-    const navigation = useNavigation();
     const [token, setToken] = React.useState<any>(null);
     const [data, setData] = React.useState<any>([]);
     const [loading, setLoading] = React.useState<Boolean>(false);
@@ -26,7 +24,7 @@ export default function Home() {
     const handleFindProducts = React.useCallback(async () => {
         try {
             const response = await Api({
-                url: `/product/list?page=${page}&size=${size}`,
+                url: `/product/list?totalPages=${page}&size=${size}`,
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,8 +46,6 @@ export default function Home() {
         }
     };
 
-    console.log(`Data ${data}`);
-
     React.useEffect(() => { handleFindProducts(); handleToken(); }, []);
 
     return (
@@ -70,7 +66,7 @@ export default function Home() {
                         data={data}
                         initialNumToRender={2}
                         renderItem={({ item }: any) => <ListHome item={item} onPressDelete={() => handleDeleteItem(item.id)} />}
-                        keyExtractor={(item) => item = item.id.toString()}
+                        keyExtractor={(item, index) => index.toString()}
                         alwaysBounceVertical={true}
                     />
                     :
